@@ -116,7 +116,7 @@
     <input type="text" id="name" name="name" required>
 
     <label for="numberid">Student ID:</label>
-    <input type="text" id="numberid" name="numberid" required>
+    <input type="text" id="student-id" placeholder="Enter student ID" pattern="\d*" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
 
     <label for="equipment">Equipment:</label>
     <textarea id="equipment" name="equipment" rows="4" required></textarea>
