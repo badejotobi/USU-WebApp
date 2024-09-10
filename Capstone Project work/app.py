@@ -14,7 +14,7 @@ equipment_data = [
 # Route for main menu
 @app.route('/')
 def main_menu():
-    return render_template('main_menu.html')
+    return render_template('main-menu.html')
 
 # Route for Check In/Out page
 @app.route('/checkinout')
