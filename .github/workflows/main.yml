@@ -12,9 +12,7 @@ jobs:
             with:
               repository: 'USU-WebApp/Capstone Project work'
               token: ${{ secrets.GIT_PASSWORD }}
-          -
-            name: Checkout
-            uses: actions/checkout@v3
+              path: ./repo-with-dockerfile
           -
             name: Set up QEMU
             uses: docker/setup-qemu-action@v2
@@ -31,7 +29,7 @@ jobs:
             name: Build and push
             uses: docker/build-push-action@v4
             with:
-              context: .
+              context: ./repo-with-dockerfile
               platforms: linux/amd64,linux/arm64
               push: true
               tags: badejotobi/usu:0.${{ github.run_number }}
