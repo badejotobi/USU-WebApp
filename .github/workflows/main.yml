@@ -2,7 +2,7 @@ name: Docker/ARGO CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 jobs:
   Build-Push-Docker:
         runs-on: ubuntu-latest
