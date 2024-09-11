@@ -7,6 +7,11 @@ jobs:
   Build-Push-Docker:
         runs-on: ubuntu-latest
         steps:
+          - uses: actions/checkout@v3
+            name: changing to the repo where the dockerfile is located
+            with:
+              repository: 'USU-WebApp/Capstone Project work'
+              token: ${{ secrets.GIT_PASSWORD }}
           -
             name: Checkout
             uses: actions/checkout@v3
