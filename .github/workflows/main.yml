@@ -14,6 +14,9 @@ jobs:
               ref: main
               token: ${{ secrets.GIT_PASSWORD }}
               path: ./repo-with-dockerfile
+          - name: cd into the capstone path
+            run: |
+              cd ./Capstone-Project-work
           -
             name: Set up QEMU
             uses: docker/setup-qemu-action@v2
