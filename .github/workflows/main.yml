@@ -14,9 +14,6 @@ jobs:
               ref: main
               token: ${{ secrets.GIT_PASSWORD }}
               path: ./repo-with-dockerfile
-          - name: cd into the capstone path
-            run: |
-              cd ./Capstone-Project-work
           -
             name: Set up QEMU
             uses: docker/setup-qemu-action@v2
@@ -33,7 +30,7 @@ jobs:
             name: Build and push
             uses: docker/build-push-action@v4
             with:
-              context: ./repo-with-dockerfile
+              context: ./repo-with-dockerfile/Capstone-Project-work
               platforms: linux/amd64,linux/arm64
               push: true
               tags: badejotobi/usu:0.${{ github.run_number }}
