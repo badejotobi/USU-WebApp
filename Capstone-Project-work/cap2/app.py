@@ -116,15 +116,15 @@ def login():
         else:
             flash('INVALID USERNAME OR PASSWORD', 'danger')
 
-    return render_template('hello.html')  # Render the HTML template
+    return render_template('login.html')  # Render the HTML template
 
 # Route for main menu
 @app.route('/mainmenu')
 def mainmenu():
     return render_template('main-menu.html')
 
-@app.route('/equipment')
-def equipment():
+@app.route('/activity')
+def activity():
     try:
         # Create the cursor object
         page = int(request.args.get('page', 1))  # Get current page number from query parameters
@@ -165,7 +165,7 @@ def equipment():
     # Pass the result to the template
     #return render_template('equipment.html', rows=rows)
 
-    return render_template('equipment.html', rows=rows, page=page, total_pages=total_pages)
+    return render_template('activity.html', rows=rows, page=page, total_pages=total_pages)
 
 
 
@@ -180,6 +180,8 @@ def equipments():
         save_equipment_data(equipment_data)
     return render_template('equipments.html', equipment_data=equipment_data)
 
+
+'''
 @app.route('/update_availability', methods=['POST'])
 def update_availability():
     item_id = int(request.form['item_id'])
@@ -199,8 +201,8 @@ def update_availability():
     # Save the updated data
     save_equipment_data(equipment_data)
 
-    return redirect(url_for('equipments'))
-
+    return redirect(url_for('equipment'))
+'''
 
 
 @app.route('/checkinout', methods=['GET', 'POST'])
