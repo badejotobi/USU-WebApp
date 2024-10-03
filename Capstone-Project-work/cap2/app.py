@@ -1,5 +1,6 @@
 import os
 import json
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import mysql.connector
 from equipment import load_equipment_data, save_equipment_data, initial_data
@@ -80,6 +81,7 @@ def table_check(fname, lname, studentid, equip, status):
             cursor.execute(insert_query, (fname, lname, studentid, equip, status))
             mydb.commit()
             print("Data inserted successfully!")
+        return result
 
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -203,6 +205,26 @@ def update_availability():
 
     return redirect(url_for('equipment'))
 '''
+def check_status(student_id):
+    try:
+        # Establishing a database connection
+        cursor = mydb.cursor()
+
+        # Check if the student status already has a record with the given student_id
+        select_query = """
+        SELECT status,timestamp FROM accounts WHERE student_id = %s;
+        """
+        cursor.execute(select_query, (student_id,))  # Notice the comma for a single-element tuple
+        result = cursor.fetchone()  # Fetch one result
+
+        if result:
+            return result[0], result[1]  # Return the status if found
+        else:
+            return None  # Return None if no record is found
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return False
+    
 
 
 @app.route('/checkinout', methods=['GET', 'POST'])
@@ -214,7 +236,16 @@ def checkinout():
         equipment = request.form['equipment']
         status = request.form['status']
 
-        table_check(fname, lname, studentid, equipment, status)
+        current_status, previous_time = check_status(studentid)
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if current_status == status:
+            flash(f'You are currently {current_status} at {previous_time}.', 'danger')  # Using string formatting
+            return redirect(url_for('checkinout'))
+        else:
+            # Proceed with other logic, like updating or inserting the record
+            table_check(fname, lname, studentid, equipment, status)
+            new_status = check_status(studentid)[0]
+            flash(f'You successfully {new_status} at {current_time}', 'success')
     
     return render_template('checkinout.html')
 
