@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - USU's Activity Center</title>
     <style>
+
+        .usu-logo {
+        position: absolute; /* Position the image relative to the page */
+        bottom: 10px; /* Distance from the bottom */
+        right: 10px; /* Distance from the right */
+        width: 100px; /* Adjust the size as needed */
+        height: auto; /* Maintain the aspect ratio */
+        }
+
         body {
             display: flex;
             justify-content: center;
@@ -15,7 +24,7 @@
             font-family: Arial, sans-serif;
 
             /* Set the background image */
-            background-image: url('bg.jpg');
+            background-image: url('static/images/bg.jpg');
             background-size: cover;  /* Ensures the image covers the entire page */
             background-position: center; /* Centers the background image */
             background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -33,7 +42,7 @@
         h1 {
             font-size: 36px; /* Increased font size of the title */
             margin-bottom: 30px;
-            color: #6200ea; /* Purple color for the title */
+            color: #0078CC; 
         }
 
         label {
@@ -56,7 +65,7 @@
         .btn {
             width: 100%;
             padding: 15px; /* Increased button size */
-            background-color: #6200ea;
+            background-color: #0078CC;
             color: white;
             border: none;
             border-radius: 5px;
@@ -117,6 +126,9 @@
             <button type="submit" class="btn">Login</button>
         </form>
     </div>
+
+    <!-- USU Logo in the bottom right corner -->
+    <img src="/static/images/USU_Logo.png" alt="USU Logo" class="usu-logo">
 
 </body>
 </html>

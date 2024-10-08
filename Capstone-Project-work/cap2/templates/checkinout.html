@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Check In/Out</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"> 
+
     <style>
+
+        .usu-logo {
+        position: absolute; /* Position the image relative to the page */
+        bottom: 10px; /* Distance from the bottom */
+        right: 10px; /* Distance from the right */
+        width: 100px; /* Adjust the size as needed */
+        height: auto; /* Maintain the aspect ratio */
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -14,7 +25,7 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-image: url("{{ url_for('static', filename='images/ice.jpg') }}");
+            background-color: rgba(0, 140, 255, 0.993);
             background-size: cover;
             background-position: center;
         }
@@ -31,7 +42,7 @@
 
         h2 {
             text-align: center;
-            color: #333;
+            color: #ffffff;
             margin-bottom: 20px;
         }
 
@@ -75,11 +86,6 @@
             background-color: #45a049;
         }
 
-        /* Additional styles for form animation */
-        form:hover {
-            transform: scale(1.05);
-        }
-
         /* Additional styles for footer */
         footer {
             margin-top: 20px;
@@ -88,7 +94,7 @@
             color: #fff;
         }
 
-        /* Styles for the link */
+        /* Styles for the links */
         .links {
             display: inline-block;
             margin-right: 15px; /* Space between links */
@@ -96,20 +102,25 @@
 
         .links a {
             text-decoration: none;
-            color: #4caf50;
+            color: #ffffff;
             font-size: 18px;
             padding: 10px;
-            border: 2px solid #4caf50;
+            border: 2px solid #ffffff;
             border-radius: 4px;
             display: inline-block;
             transition: background-color 0.3s, color 0.3s;
         }
 
         .links a:hover {
-            background-color: #4caf50;
+            background-color: #4caf81;
             color: #fff;
         }
-    
+
+        /* Add margin to move the links down */
+        .container {
+            margin-top: 40px; /* Adds space between form and the buttons */
+        }
+
     </style>
     <script>
         // JavaScript function to validate the select element
@@ -151,7 +162,7 @@
     </div>
 </form>
 
-<div class="container mt-4">
+<div class="container">
     <div class="links">
         <a href="/activity" id="1">Activity Logs</a>
     </div>
@@ -161,9 +172,30 @@
     </div>
 </div>
 
-<footer>
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  <div class="container mt-3">
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endwith %}
+
+<!-- Add Bootstrap JS (for alert dismiss) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- <footer>
     USU Check-In/Out Application
-</footer>
+</footer> -->
+
+<!-- USU Logo in the bottom right corner -->
+<img src="/static/images/USU_Logo.png" alt="USU Logo" class="usu-logo">
 
 </body>
+
 </html>
