@@ -236,7 +236,12 @@ def checkinout():
         equipment = request.form['equipment']
         status = request.form['status']
 
-        current_status, previous_time = check_status(studentid)
+        result = check_status(studentid)
+        if result is not None:
+            current_status, previous_time = result
+        else:
+            current_status, previous_time = None, None
+        
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         if current_status == status:
             flash(f'You are currently {current_status} at {previous_time}.', 'danger')  # Using string formatting
