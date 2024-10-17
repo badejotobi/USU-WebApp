@@ -4,12 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Equipment List</title>
+    <style>
+    .usu-logo {
+        position: absolute; /* Position the image relative to the page */
+        bottom: 10px; /* Distance from the bottom */
+        right: 10px; /* Distance from the right */
+        width: 100px; /* Adjust the size as needed */
+        height: auto; /* Maintain the aspect ratio */
+        }
+    </style>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
 <body>
     <div class="container mt-4">
         <h1>Equipment Log</h1>
-        <table class="table table-bordered">
+
+        <!-- Equipment Log Table -->
+        <table class="table table-bordered" id="equipmentTable">
             <thead>
                 <tr>
                     <th>First Name</th>
@@ -21,21 +38,28 @@
                 </tr>
             </thead>
             <tbody>
+                {% if rows %}
                 <!-- Iterate over rows passed from Flask -->
-                {% for row in rows %}
+                    {% for row in rows %}
+                        <tr>
+                            <td>{{ row[0] }}</td> <!-- first_name -->
+                            <td>{{ row[1] }}</td> <!-- last_name -->
+                            <td>{{ row[2] }}</td> <!-- student_id -->
+                            <td>{{ row[3] }}</td> <!-- equipment -->
+                            <td>
+                                <span style="color: {% if row[4] == 'check-out' %}red{% elif row[4] == 'check-in' %}green{% else %}black{% endif %};">
+                                    {{ row[4] }}
+                                </span>
+                            </td> <!-- status with conditional color -->
+                            <td>{{ row[5] }}</td> <!-- timestamp -->
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <!-- Show message when no rows are available -->
                     <tr>
-                        <td>{{ row[0] }}</td> <!-- first_name -->
-                        <td>{{ row[1] }}</td> <!-- last_name -->
-                        <td>{{ row[2] }}</td> <!-- student_id -->
-                        <td>{{ row[3] }}</td> <!-- equipment -->
-                        <td>
-                            <span style="color: {% if row[4] == 'check-out' %}red{% elif row[4] == 'check-in' %}green{% else %}black{% endif %};">
-                                {{ row[4] }}
-                            </span>
-                        </td> <!-- status with conditional color -->
-                        <td>{{ row[5] }}</td> <!-- timestamp -->
+                        <td colspan="6" class="text-center">No data available</td>
                     </tr>
-                {% endfor %}
+                {% endif %}
             </tbody>
         </table>
 
@@ -67,8 +91,26 @@
         </nav>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- DataTables JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <!-- Initialize DataTables -->
+    <script>
+        $(document).ready(function() {
+            $('#equipmentTable').DataTable({
+                "order": [[5, "asc"]]  // Sort by the Timestamp column in ascending order
+            });
+        });
+    </script>
+
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- USU Logo in the bottom right corner -->
+    <a href="/mainmenu" class="btn logout-button">
+        <img src="/static/images/USU_Logo.png" alt="USU Logo" class="usu-logo">
+    </a>
 </body>
 </html>
+

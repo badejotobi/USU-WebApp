@@ -1,19 +1,27 @@
 import os
 import json
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import mysql.connector
+from functools import wraps
 from equipment import load_equipment_data, save_equipment_data, initial_data
 
 app = Flask(__name__)
 app.secret_key = '!@#$%^&*(jhdshgsd'  # Required for flash messages
 
+
 '''
+
+##---------- WE NEED THIS FOR SETTING ENVIRONMENT----------
+
 HOSTNAME = os.environ.get('HOSTNAME')
 MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE')
 MYSQL_USER = os.environ.get('MYSQL_USER')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
+
+##-----------------------------------------------------------
 '''
+##DATABSE CONNECTION 
 mydb= mysql.connector.connect(
     host="127.0.0.1",
     database="user",  # Use your database name
@@ -21,8 +29,17 @@ mydb= mysql.connector.connect(
     password='',
     port=3306
     )
+'''
+mydb= mysql.connector.connect(
+    host=HOSTNAME,
+    database=MYSQL_DATABASE,  # Use your database name
+    user=MYSQL_USER,                 # Use your database username
+    password=MYSQL_PASSWORD,
+    port=3306
+    )
+'''
 
-
+##THIS IS TO CHECK THE DATABSE TABLE
 def table_check(fname, lname, studentid, equip, status):
     try:
         # Establishing a database connection
@@ -40,14 +57,14 @@ def table_check(fname, lname, studentid, equip, status):
             PRIMARY KEY (student_id)
         );
         """
-        cursor.execute(create_table_query)
+        cursor.execute(create_table_query) #EXECUTE THE COMMAND TO CREATE THE TABLE
         mydb.commit()
 
-         # Check if the student already has a record with the given status
+         # Check if the student already has a record with the given status (CHECKIN OR CHECKOUT)
         select_query = """
         SELECT status FROM accounts WHERE student_id = %s;
         """
-        cursor.execute(select_query, (studentid,))
+        cursor.execute(select_query, (studentid,))  ##PERFORMS THE QUERY FOR FETCHING THE STATUS
         result = cursor.fetchone()  # Fetch one result
 
         if result:
@@ -73,7 +90,7 @@ def table_check(fname, lname, studentid, equip, status):
                 print("Data inserted successfully!")
 
         else:
-            # Insert data from the form if no existing record is found
+            # Insert data from the form if no existing record is found FROM THE TABLE QUERY
             insert_query = """
             INSERT INTO accounts (first_name, last_name, student_id, equipment, status)
             VALUES (%s, %s, %s, %s, %s);
@@ -91,7 +108,7 @@ def table_check(fname, lname, studentid, equip, status):
 
 
 
-
+##THIS CHECK THE DATABASE FOR THE POROVIDED USER LOGIN
 def validate_login(username, password):
     try:
         # Establishing a database connection
@@ -103,8 +120,20 @@ def validate_login(username, password):
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         return False
+# A decorator to ensure the user is logged in before accessing any routes
+# A decorator to ensure the user is logged in before accessing any routes
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Check if the user is logged in by checking the session
+        if 'logged_in' not in session or not session['logged_in']:
+            flash('You must be logged in to access this page.', 'warning')
+            return redirect(url_for('login'))  # Redirect to login page if not logged in
+        return f(*args, **kwargs)
+    return decorated_function
 
-
+#THIS IS TO ROUTE THE LOGIN PAGE
+## Login route handling
 @app.route("/", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -113,19 +142,24 @@ def login():
         
         # Validate credentials
         if validate_login(username, password):
+            session['logged_in'] = True  # Set session flag to indicate user is logged in
+            session['username'] = username  # Optionally store the username in the session
             flash('Login successful!', 'success')
-            return redirect(url_for('mainmenu'))  # Redirect to a welcome page or dashboard
+            return redirect(url_for('mainmenu'))  # Redirect to a protected page after successful login
         else:
             flash('INVALID USERNAME OR PASSWORD', 'danger')
 
-    return render_template('login.html')  # Render the HTML template
+    return render_template('login.html')  # Render the login HTML template
 
-# Route for main menu
+
+# Route for main menu PAGE OF CHECKIN CHECKOUT HOMEPAGE 
 @app.route('/mainmenu')
+@login_required  # Restrict access to this page unless the user is logged in
 def mainmenu():
     return render_template('main-menu.html')
 
 @app.route('/activity')
+@login_required  # Restrict access to this page unless the user is logged in
 def activity():
     try:
         # Create the cursor object
@@ -151,6 +185,8 @@ def activity():
         query = 'SELECT first_name, last_name, student_id, equipment, status, timestamp FROM accounts LIMIT %s OFFSET %s'
         conn.execute(query, (per_page, start))
         rows = conn.fetchall()
+        if not rows:
+            rows = []
 
 
     # Pass the result to the template
@@ -159,12 +195,15 @@ def activity():
     except mysql.connector.Error as err:
         # Log the error and show an error page or message
         print(f"Database error: {err}")
+        rows = []
+        total_pages = 1
     finally:
         # Always close the cursor/connection if it was opened
         if conn:
             conn.close()
 
     # Pass the result to the template
+   
     #return render_template('equipment.html', rows=rows)
 
     return render_template('activity.html', rows=rows, page=page, total_pages=total_pages)
@@ -172,6 +211,7 @@ def activity():
 
 
 @app.route('/equipments')
+@login_required  # Restrict access to this page unless the user is logged in
 def equipments():
     # Load initial equipment data
     equipment_data = load_equipment_data()
@@ -228,6 +268,7 @@ def check_status(student_id):
 
 
 @app.route('/checkinout', methods=['GET', 'POST'])
+@login_required  # Restrict access to this page unless the user is logged in
 def checkinout():
     if request.method == 'POST':
         fname = request.form['fname']
@@ -257,8 +298,17 @@ def checkinout():
 
 # Route for Tournament Schedule page
 @app.route('/tournament')
+@login_required  # Restrict access to this page unless the user is logged in
 def tournament():
     return render_template('tournament.html')
+
+## Logout route
+@app.route('/logout')
+@login_required  # Protect this route
+def logout():
+    session.clear()  # Clear the session data to log the user out
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
