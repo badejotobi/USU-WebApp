@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = '!@#$%^&*(jhdshgsd'  # Required for flash messages
 
 
-'''
+
 
 ##---------- WE NEED THIS FOR SETTING ENVIRONMENT----------
 
@@ -35,9 +35,9 @@ mydb= mysql.connector.connect(
     database=MYSQL_DATABASE,  # Use your database name
     user=MYSQL_USER,                 # Use your database username
     password=MYSQL_PASSWORD,
-    port=3306
+    port=PORT
     )
-'''
+
 
 ##THIS IS TO CHECK THE DATABSE TABLE
 def table_check(fname, lname, studentid, equip, status):
@@ -311,5 +311,10 @@ def logout():
     return redirect(url_for('login'))
 
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port="8082",debug=False)
+import os
+
+if __name__ == "__main__":
+    host = os.getenv('FLASK_RUN_HOST', '127.0.0.1')  # Default to localhost
+    port = int(os.getenv('FLASK_RUN_PORT', 8080))  # Default to port 8080
+    app.run(host=host, port=port, debug=False)
+
