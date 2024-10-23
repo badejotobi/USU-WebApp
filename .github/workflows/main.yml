@@ -8,7 +8,7 @@ on:
 
 jobs:
   Build-Push-Docker:
-        runs-on: ubuntu-latest
+        runs-on: [Tobi]
         steps:
         #CHECKING CODE AND BUILD STAGES and STATIC CODE ANALYSIS CHECK
         - uses: actions/checkout@v4
