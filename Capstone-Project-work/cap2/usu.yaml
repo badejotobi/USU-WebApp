@@ -11,7 +11,7 @@ services:
       HOSTNAME: dbb
       MYSQL_DATABASE: user
       MYSQL_USER: exampleuse
-      MYSQL_PASSWORD: rootpassword
+      MYSQL_PASSWORD: rootpasswor
     depends_on:
       - dbb
 
