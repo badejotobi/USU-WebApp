@@ -10,43 +10,45 @@ jobs:
   Build-Push-Docker:
         runs-on: ubuntu-latest
         steps:
+        #CHECKING CODE AND BUILD STAGES and STATIC CODE ANALYSIS CHECK
+        - uses: actions/checkout@v4
+          with:
+            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+        - uses: sonarsource/sonarqube-scan-action@v3
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+            # If you wish to fail your job when the Quality Gate is red, uncomment the
+            # following lines. This would typically be used to fail a deployment.
+            # - uses: sonarsource/sonarqube-quality-gate-action@master
+            #   timeout-minutes: 5
+            #   env:
+            #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                
 
-        #CHECKING CODE AND BUILD STAGES
-          - uses: actions/checkout@v4.2.1
-            name: changing to the repo where the dockerfile is located
+        ##########################################################
 
-          - name: set up python
-            uses: actions/setup-python@v5.2.0
-            with: 
-              python-version: 3.8
+        # - name: set up python
+        #   uses: actions/setup-python@v5.2.0
+        #   with: 
+        #     python-version: 3.8
 
 
-          - name: install bandit
-            run: pip install bandit
+        #  - name: install bandit
+        #    run: pip install bandit
 
-            
+
         #TEST STAGE
-          - name: run the bandit scan - static code analysis
-            run: bandit -ll -ii -r . -f json -o bandit-report.json
+        #  - name: run the bandit scan - static code analysis
+        #   run: bandit -ll -ii -r . -f json -o bandit-report.json
 
-          - name: uploading the artifact
-            uses: actions/upload-artifact@v4.4.3
-            if: always()
-            with:
-              name: bandit-findings
-              path: bandit-report.json
-
-              
-           # Step 6: Download and send Bandit report to CodeClimate
-          - name: Send report to CodeClimate
-            env:
-              CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-            run: |
-              curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-              chmod +x ./cc-test-reporter
-              ./cc-test-reporter before-build
-              ./cc-test-reporter format-coverage bandit-report.json --input-type clover
-              ./cc-test-reporter upload-coverage
+        #   - name: uploading the artifact
+        #     uses: actions/upload-artifact@v4.4.3
+        #    if: always()
+        #    with:
+        #      name: bandit-findings
+        #      path: bandit-report.json
+        #############################################################
 
           - name: Check for changes in Capstone-Project-work
             id: changes
