@@ -14,10 +14,11 @@ app.secret_key = '!@#$%^&*(jhdshgsd'  # Required for flash messages
 
 ##---------- WE NEED THIS FOR SETTING ENVIRONMENT----------
 
-HOSTNAME = os.environ.get('HOSTNAME')
+MYSQL_HOST = os.environ.get('MYSQL_HOST')
 MYSQL_DATABASE = os.environ.get('MYSQL_DATABASE')
 MYSQL_USER = os.environ.get('MYSQL_USER')
 MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
+MYSQL_PORT = os.environ.get('MYSQL_PORT')
 
 ##-----------------------------------------------------------
 '''
@@ -31,11 +32,11 @@ mydb= mysql.connector.connect(
     )
 '''
 mydb= mysql.connector.connect(
-    host=HOSTNAME,
+    host=MYSQL_HOST,
     database=MYSQL_DATABASE,  # Use your database name
     user=MYSQL_USER,                 # Use your database username
     password=MYSQL_PASSWORD,
-    port=PORT
+    port=MYSQL_PORT
     )
 
 
