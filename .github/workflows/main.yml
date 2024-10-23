@@ -13,7 +13,7 @@ jobs:
         #CHECKING CODE AND BUILD STAGES and STATIC CODE ANALYSIS CHECK
         - uses: actions/checkout@v4
           with:
-            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+            fetch-depth: 0  #Shallow clones should be disabled for a better relevancy of analysis
         - uses: sonarsource/sonarqube-scan-action@v3
           env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

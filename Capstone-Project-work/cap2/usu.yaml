@@ -10,7 +10,7 @@ services:
     environment:
       HOSTNAME: dbb
       MYSQL_DATABASE: user
-      MYSQL_USER: exampleuse
+      MYSQL_USER: exampleuser
       MYSQL_PASSWORD: rootpassword
     depends_on:
       - dbb
