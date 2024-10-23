@@ -45,7 +45,7 @@ jobs:
               curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
               chmod +x ./cc-test-reporter
               ./cc-test-reporter before-build
-              ./cc-test-reporter format-coverage bandit-report.json --input-type bandit
+              ./cc-test-reporter format-coverage bandit-report.json --input-type clover
               ./cc-test-reporter upload-coverage
 
           - name: Check for changes in Capstone-Project-work
