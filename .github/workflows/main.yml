@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
 
-        #BUILD STAGES
+        #CHECKING CODE AND BUILD STAGES
           - uses: actions/checkout@v4.2.1
             name: changing to the repo where the dockerfile is located
 
@@ -24,6 +24,8 @@ jobs:
           - name: install bandit
             run: pip install bandit
 
+            
+        #TEST STAGE
           - name: run the bandit scan - static code analysis
             run: bandit -ll -ii -r . -f json -o bandit-report.json
 
@@ -33,6 +35,18 @@ jobs:
             with:
               name: bandit-findings
               path: bandit-report.json
+
+              
+           # Step 6: Download and send Bandit report to CodeClimate
+          - name: Send report to CodeClimate
+            env:
+              CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+            run: |
+              curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+              chmod +x ./cc-test-reporter
+              ./cc-test-reporter before-build
+              ./cc-test-reporter format-coverage bandit-report.json --input-type bandit
+              ./cc-test-reporter upload-coverage
 
           - name: Check for changes in Capstone-Project-work
             id: changes
@@ -63,6 +77,8 @@ jobs:
               platforms: linux/amd64,linux/arm64
               push: true
               tags: badejotobi/usu:0.${{ github.run_number }}
+
+  #DEPLOY STAGE
   ARGO_CD_DEPLOYMENT:
         needs: Build-Push-Docker
         runs-on: ubuntu-latest
