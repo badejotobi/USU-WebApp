@@ -10,8 +10,30 @@ jobs:
   Build-Push-Docker:
         runs-on: ubuntu-latest
         steps:
+
+        #BUILD STAGES
           - uses: actions/checkout@v4.2.1
             name: changing to the repo where the dockerfile is located
+
+          - name: set up python
+            uses: actions/setup-python@v2
+            with: 
+              pyhton-version: 3.8
+
+
+          - name: install bandit
+            run: pip install bandit
+
+          - name: run the bandit scan - static code analysis
+            run: bandit -ll -ii -r . -f json -o bandit-report.json
+
+          - name: uploading the artifact
+            uses: actions/upload-artifact@v3
+            if: always()
+            with:
+              name: bandit-findings
+              path: bandit-report.json
+
           - name: Check for changes in Capstone-Project-work
             id: changes
             run: |
@@ -48,7 +70,7 @@ jobs:
           - uses: actions/checkout@v3
             name: changing the deployment of git repo
             with:
-              repository: '2024-USU-Capstone/argo-cd'
+              repository: 'badejotobi/k8s'
               token: ${{ secrets.GIT_PASSWORD }}
           - name: modify the image
             run: |
