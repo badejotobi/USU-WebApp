@@ -10,7 +10,7 @@ services:
     environment:
       HOSTNAME: dbb
       MYSQL_DATABASE: user
-      MYSQL_USER: exampleusd
+      MYSQL_USER: exampleus
       MYSQL_PASSWORD: rootpassword
     depends_on:
       - dbb
@@ -20,8 +20,8 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: user
-      MYSQL_USER: exampleuser
-      MYSQL_PASSWORD: rootpassword
+      MYSQL_USER: exampleusera
+      MYSQL_PASSWORD: rootpasswordk
       MYSQL_ROOT_PASSWORD: rootpassword
     ports:
       - "3306:3306"
