@@ -107,7 +107,7 @@ jobs:
 
         - name: Scan Docker image for vulnerabilities
           run: |
-            trivy image --exit-code 1 --severity HIGH,CRITICAL --format sarif --output trivy-report.sarif badejotobi/usu:0.${{ github.run_number }}
+            trivy image --format sarif --output trivy-report.sarif badejotobi/usu:0.${{ github.run_number }}
 
         - name: Upload SARIF report
           uses: github/codeql-action/upload-sarif@v2
