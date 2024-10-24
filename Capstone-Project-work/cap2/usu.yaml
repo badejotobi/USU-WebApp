@@ -20,7 +20,7 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: user
-      MYSQL_USER: exampleuseradd
+      MYSQL_USER: exampleuseraded
       MYSQL_PASSWORD: rootpaksswoeerdksd
       MYSQL_ROOT_PASSWORD: rootdpassword
     ports:
