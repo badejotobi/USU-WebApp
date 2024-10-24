@@ -203,7 +203,7 @@ def activity():
         if conn:
             conn.close()
 
-    # Pass the result to the templxatecss
+    # Pass the result to the templatecss
    
     #return render_template('equipment.html', rows=rows)
 
