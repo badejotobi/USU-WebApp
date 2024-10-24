@@ -78,15 +78,33 @@ jobs:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
         -
-          name: Build and push
+          name: Build docker images
           uses: docker/build-push-action@v6.9.0
           with:
             context: ./Capstone-Project-work/cap2
             platforms: linux/amd64,linux/arm64
             push: false
             tags: badejotobi/usu:0.${{ github.run_number }}
+         # Scan Docker image with Trivy
+        - name: Install Trivy
+          run: |
+            sudo apt-get update -y
+            sudo apt-get install wget -y
+            TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest | grep tag_name | cut -d '"' -f 4)
+            wget https://github.com/aquasecurity/trivy/releases/download/$TRIVY_VERSION/trivy_${TRIVY_VERSION#v}_Linux-64bit.deb
+            sudo dpkg -i trivy_${TRIVY_VERSION#v}_Linux-64bit.deb || sudo apt-get -f install -y
+
+        - name: Scan Docker image for vulnerabilities
+          run: |
+            trivy image --exit-code 1 --severity HIGH,CRITICAL --format sarif --output trivy-report.sarif badejotobi/usu:0.${{ github.run_number }}
+
+        - name: Upload SARIF report
+          uses: github/codeql-action/upload-sarif@v2
+          with:
+            sarif_file: trivy-report.sarif
+
         -
-          name: push
+          name: pushing to docker hub
           uses: docker/build-push-action@v6.9.0
           with:
             context: ./Capstone-Project-work/cap2
