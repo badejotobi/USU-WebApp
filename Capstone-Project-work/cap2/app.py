@@ -203,7 +203,7 @@ def activity():
         if conn:
             conn.close()
 
-    # Pass the result to the templaxtess
+    # Pass the result to the temgplaxtess
    
     #return render_template('equipment.html', rows=rows)
 
