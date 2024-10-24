@@ -26,11 +26,7 @@ jobs:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-            
-        - uses: sonarsource/sonarqube-scan-action@v3
-          env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        
           
             # If you wish to fail your job when the Quality Gate is red, uncomment the
             # following lines. This would typically be used to fail a deployment.
