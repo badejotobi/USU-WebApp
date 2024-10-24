@@ -85,6 +85,13 @@ jobs:
             platforms: linux/amd64,linux/arm64
             push: false
             tags: badejotobi/usu:0.${{ github.run_number }}
+        -
+          name: push
+          uses: docker/build-push-action@v6.9.0
+          with:
+            push: true
+            tags: badejotobi/usu:0.${{ github.run_number }}
+
 
   #DEPLOY STAGE
   ARGO_CD_DEPLOYMENT:
