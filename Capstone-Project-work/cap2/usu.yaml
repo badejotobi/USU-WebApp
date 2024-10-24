@@ -22,7 +22,7 @@ services:
       MYSQL_DATABASE: user
       MYSQL_USER: exampleuseradd
       MYSQL_PASSWORD: rootpasswoeerdksd
-      MYSQL_ROOT_PASSWORD: rootdpassword
+      MYSQL_ROOT_PASSWORD: rootdpakssword
     ports:
       - "3306:3306"
     volumes:
