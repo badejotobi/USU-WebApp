@@ -203,7 +203,7 @@ def activity():
         if conn:
             conn.close()
 
-    # Pass the result to the template
+    # Pass the result to the templates
    
     #return render_template('equipment.html', rows=rows)
 
