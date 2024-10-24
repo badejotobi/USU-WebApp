@@ -34,26 +34,26 @@ jobs:
 
         ##########################################################
 
-        # - name: set up python
-        #   uses: actions/setup-python@v5.2.0
-        #   with: 
-        #     python-version: 3.8
+        - name: set up python
+          uses: actions/setup-python@v5.2.0
+          with: 
+            python-version: 3.8
 
 
-        #  - name: install bandit
-        #    run: pip install bandit
+        - name: install bandit
+          run: pip install bandit
 
 
         #TEST STAGE
-        #  - name: run the bandit scan - static code analysis
-        #   run: bandit -ll -ii -r . -f json -o bandit-report.json
+        - name: run the bandit scan - static code analysis
+          run: bandit -ll -ii -r . -f json -o bandit-report.json
 
-        #   - name: uploading the artifact
-        #     uses: actions/upload-artifact@v4.4.3
-        #    if: always()
-        #    with:
-        #      name: bandit-findings
-        #      path: bandit-report.json
+        - name: uploading the artifact
+          uses: actions/upload-artifact@v4.4.3
+          if: always()
+          with:
+            name: bandit-findings
+            path: bandit-report.json
         #############################################################
         
 
@@ -86,33 +86,33 @@ jobs:
             push: true
             tags: badejotobi/usu:0.${{ github.run_number }}
          # Scan Docker image with Trivy
-        - name: Install Trivy
-          run: |
-            sudo apt-get update && sudo apt-get install wget -y
-            wget https://github.com/aquasecurity/trivy/releases/download/v0.46.0/trivy_0.46.0_Linux-64bit.deb
-            sudo dpkg -i trivy_0.46.0_Linux-64bit.deb
+        #- name: Install Trivy
+       #   run: |
+        #    sudo apt-get update && sudo apt-get install wget -y
+        #    wget https://github.com/aquasecurity/trivy/releases/download/v0.46.0/trivy_0.46.0_Linux-64bit.deb
+        #    sudo dpkg -i trivy_0.46.0_Linux-64bit.deb
         
         # Cache Trivy vulnerability database
-        - name: Cache Trivy DB
-          uses: actions/cache@v3
-          with:
-            path: ~/.cache/trivy
-            key: ${{ runner.os }}-trivy-db
-            restore-keys: |
-              ${{ runner.os }}-trivy-db
+       # - name: Cache Trivy DB
+       #   uses: actions/cache@v3
+       #   with:
+       #     path: ~/.cache/trivy
+       #     key: ${{ runner.os }}-trivy-db
+       #     restore-keys: |
+       #       ${{ runner.os }}-trivy-db
 
 # Force update Trivy vulnerability database
-        - name: Force update Trivy vulnerability database
-          run: trivy image --download-db-only
+      #  - name: Force update Trivy vulnerability database
+      #    run: trivy image --download-db-only
 
-        - name: Scan Docker image for vulnerabilities
-          run: |
-            trivy image --format sarif --output trivy-report.sarif badejotobi/usu:0.${{ github.run_number }}
-
-        - name: Upload SARIF report
-          uses: github/codeql-action/upload-sarif@v2
-          with:
-            sarif_file: trivy-report.sarif
+      #  - name: Scan Docker image for vulnerabilities
+       #   run: |
+      #      trivy image --format sarif --output trivy-report.sarif badejotobi/usu:0.${{ github.run_number }}
+#
+      #  - name: Upload SARIF report
+      #    uses: github/codeql-action/upload-sarif@v2
+       #   with:
+       #     sarif_file: trivy-report.sarif
 
 
   #DEPLOY STAGE
