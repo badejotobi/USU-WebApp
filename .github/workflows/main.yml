@@ -89,6 +89,7 @@ jobs:
           name: push
           uses: docker/build-push-action@v6.9.0
           with:
+            context: ./Capstone-Project-work/cap2
             push: true
             tags: badejotobi/usu:0.${{ github.run_number }}
 
