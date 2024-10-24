@@ -88,12 +88,20 @@ jobs:
          # Scan Docker image with Trivy
         - name: Install Trivy
           run: |
-            sudo apt-get update -y
-            sudo apt-get install wget -y
-            TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest | grep tag_name | cut -d '"' -f 4)
-            wget https://github.com/aquasecurity/trivy/releases/download/$TRIVY_VERSION/trivy_${TRIVY_VERSION#v}_Linux-64bit.deb
-            sudo dpkg -i trivy_${TRIVY_VERSION#v}_Linux-64bit.deb || sudo apt-get -f install -y
-       
+            sudo apt-get update && sudo apt-get install wget -y
+            wget https://github.com/aquasecurity/trivy/releases/download/v0.46.0/trivy_0.46.0_Linux-64bit.deb
+            sudo dpkg -i trivy_0.46.0_Linux-64bit.deb
+        
+        # Cache Trivy vulnerability database
+        - name: Cache Trivy DB
+          uses: actions/cache@v3
+          with:
+            path: ~/.cache/trivy
+            key: ${{ runner.os }}-trivy-db
+            restore-keys: |
+              ${{ runner.os }}-trivy-db
+
+# Force update Trivy vulnerability database
         - name: Force update Trivy vulnerability database
           run: trivy image --download-db-only
 
